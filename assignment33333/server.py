@@ -12,7 +12,7 @@ def log_stats():
     while True:
         time.sleep(10)
         with lock:
-            n = len(tuple_space)
+        n = len(tuple_space)
             avg_key = sum(len(k) for k in tuple_space) / n if n else 0
             avg_val = sum(len(v) for v in tuple_space.values()) / n if n else 0
             print(f"--- Server Stats ---")
