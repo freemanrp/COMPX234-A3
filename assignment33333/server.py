@@ -2,10 +2,12 @@
 import socket
 import threading
 import time
-
+# Shared tuple space for storing key-value pairs
 tuple_space = {}
+# Lock to ensure thread-safe access to shared resources
 lock = threading.Lock()
 clients_connected = 0
+# Dictionary to track operations statistics
 total_ops = {'PUT': 0, 'GET': 0, 'READ': 0, 'ERR': 0}
 
 def log_stats():
@@ -69,7 +71,7 @@ def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind(('localhost', port))
     server.listen()
-    print(f"🌟 Server is running on port {port}...")
+    print(f" Server is running on port {port}...")
 
     threading.Thread(target=log_stats, daemon=True).start()
 
