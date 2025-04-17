@@ -11,9 +11,15 @@ clients_connected = 0
 total_ops = {'PUT': 0, 'GET': 0, 'READ': 0, 'ERR': 0}
 
 def log_stats():
+    """
+    Logs server statistics periodically every 10 seconds.
+    This includes the number of tuples, average key/value lengths,
+    number of connected clients, and operation counts.
+    """
     while True:
         time.sleep(10)
         with lock:
+        # Number of tuples in the shared space
         n = len(tuple_space)
             avg_key = sum(len(k) for k in tuple_space) / n if n else 0
             avg_val = sum(len(v) for v in tuple_space.values()) / n if n else 0
@@ -22,6 +28,11 @@ def log_stats():
             print(f"Clients: {clients_connected}, Ops: {total_ops}")
 
 def handle_client(conn):
+    """
+    Handles communication with a single client.
+    Processes messages sent by the client and performs
+    the requested operations (PUT, GET, READ).
+    """
     global clients_connected
     with lock:
         clients_connected += 1
@@ -67,6 +78,11 @@ def handle_client(conn):
         conn.close()
 
 def main():
+    """
+    Main function to start the server.
+    Listens for incoming client connections and spawns
+    a new thread to handle each client.
+    """
     port = int(input("Enter port (e.g. 51234): "))
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind(('localhost', port))
