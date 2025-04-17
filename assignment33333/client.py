@@ -6,11 +6,14 @@ def send_request(sock, line):
     parts = line.strip().split(" ", 2)
     if not parts:
         return
+    #construct the command based on the input type
     if parts[0] == "PUT" and len(parts) >= 3:
         cmd = f"P {parts[1]} {parts[2]}"
     elif parts[0] == "GET" and len(parts) >= 2:
+        #GET command expects a key
         cmd = f"G {parts[1]}"
     elif parts[0] == "READ" and len(parts) >= 2:
+        #READ command expects a key 
         cmd = f"R {parts[1]}"
     else:
         print(f"Invalid line: {line.strip()}")
@@ -22,6 +25,7 @@ def send_request(sock, line):
     print(f"{line.strip()}: {response[4:]}")
 
 def main():
+    # Ensure the correct number of command-line arguments
     if len(sys.argv) != 4:
         print("Usage: python client.py <host> <port> <request_file>")
         return
