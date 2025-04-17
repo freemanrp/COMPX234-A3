@@ -40,7 +40,7 @@ def handle_client(conn):
         while data := conn.recv(1024):
             msg = data.decode().strip()
             cmd = msg[4]  # R, G, P
-            rest = msg[6:]
+            rest = msg[6:] # Extract the rest of the message (key or key-value pair)
             response = ""
 
             with lock:
@@ -50,13 +50,16 @@ def handle_client(conn):
                         val = tuple_space[key]
                         response = f"OK ({key}, {val}) read"
                         total_ops['READ'] += 1
+                        # Increment READ count
                     else:
                         response = f"ERR {key} does not exist"
                         total_ops['ERR'] += 1
+                        # Increment error count
                 elif cmd == 'G':
                     key = rest
                     if key in tuple_space:
                         val = tuple_space.pop(key)
+                        # Remove the key-value pair
                         response = f"OK ({key}, {val}) removed"
                         total_ops['GET'] += 1
                     else:
@@ -64,11 +67,13 @@ def handle_client(conn):
                         total_ops['ERR'] += 1
                 elif cmd == 'P':
                     key, val = rest.split(" ", 1)
+                    # Split the message into key and value
                     if key in tuple_space:
                         response = f"ERR {key} already exists"
                         total_ops['ERR'] += 1
                     else:
                         tuple_space[key] = val
+                        # Add the key-value pair to the shared space
                         response = f"OK ({key}, {val}) added"
                         total_ops['PUT'] += 1
 
