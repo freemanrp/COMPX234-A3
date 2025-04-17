@@ -1,7 +1,7 @@
 # client.py
 import socket
 import sys
-
+#function to send a request to the server
 def send_request(sock, line):
     parts = line.strip().split(" ", 2)
     if not parts:
