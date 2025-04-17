@@ -76,11 +76,13 @@ def handle_client(conn):
                         # Add the key-value pair to the shared space
                         response = f"OK ({key}, {val}) added"
                         total_ops['PUT'] += 1
-
+            # Send the response back to the client
+            # Prepend the response length (3 digits) to the response
             length = str(len(response) + 4).zfill(3)
             conn.sendall((length + " " + response).encode())
     finally:
         conn.close()
+        # Close the connection when done
 
 def main():
     """
@@ -91,13 +93,17 @@ def main():
     port = int(input("Enter port (e.g. 51234): "))
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind(('localhost', port))
+    # Bind the socket to the localhost and specified port
     server.listen()
+    # Start listening for incoming connections
     print(f" Server is running on port {port}...")
+    # Start a background thread to log server statistics
 
     threading.Thread(target=log_stats, daemon=True).start()
 
     while True:
         conn, _ = server.accept()
+         # Spawn a new thread to handle the clien
         threading.Thread(target=handle_client, args=(conn,), daemon=True).start()
 
 if __name__ == "__main__":
